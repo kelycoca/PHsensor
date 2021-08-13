@@ -1,1 +1,1 @@
-
+The pH probe detects water acidity in the tub and sends the data to the Arduino. Feedback is then sent back to the motors that control the pumps. Each pump correlates to their specific solution in the pill bottles. In this case, soap water is the base solution, and citric acid is in the other bottle. Depending on the acidity of the solution in the tub, the feedback will turn on either one of the motors, pumping the acid or base solution to neutralize the solution with the plants.
