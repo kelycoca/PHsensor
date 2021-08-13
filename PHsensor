@@ -1,0 +1,53 @@
+#include <Wire.h>
+
+float calibration_value = 21.34;
+int phval = 0;
+int acidMotor = 2;
+int baseMotor = 3; 
+unsigned long int avgval; 
+int buffer_arr[10],temp;
+void setup() 
+{
+  pinMode(acidMotor, OUTPUT);
+  pinMode(baseMotor, OUTPUT);
+ Serial.begin(9600);
+}
+void loop() {
+ for(int i=0;i<10;i++) 
+ { 
+ buffer_arr[i]=analogRead(A0);
+ delay(30);
+ }
+ for(int i=0;i<9;i++)
+ {
+ for(int j=i+1;j<10;j++)
+ {
+ if(buffer_arr[i]>buffer_arr[j])
+ {
+ temp=buffer_arr[i];
+ buffer_arr[i]=buffer_arr[j];
+ buffer_arr[j]=temp;
+ }
+ }
+ }
+ avgval=0;
+ for(int i=2;i<8;i++)
+ avgval+=buffer_arr[i];
+ float volt=(float)avgval*5.0/1024/6;
+ float ph_act = -5.70 * volt + calibration_value;
+ 
+ ///////////////
+ Serial.println("pH Val: ");
+ Serial.print(ph_act);
+ ///////////////
+
+ // need to determine the ideal pH ranges for the plants
+ if (ph_act < 7 && ph_act>=1)
+ digitalWrite(baseMotor, HIGH);
+if (ph_act < 14 && ph_act>8)
+ digitalWrite(acidMotor, HIGH);
+ else if (ph_act > 14 || ph_act<1)
+ Serial.println("Error! PH out of range!");
+ 
+ delay(1000);
+}
